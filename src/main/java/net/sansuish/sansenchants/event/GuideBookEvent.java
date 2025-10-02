@@ -40,16 +40,17 @@ public class GuideBookEvent {
                 "disarm",
                 "earthen_grip",
                 "echo_guard",
+                "echo_step",
                 "echo_strike",
                 "homing",
                 "magnetism",
-                "smelter",
                 "photosynthesis",
+                "smelter",
                 "stability",
                 "timber",
-                "warp",
                 "twerker",
-                "wade"
+                "wade",
+                "warp"
         );
 
         // Build page index, accounting for 6 index pages
@@ -64,11 +65,11 @@ public class GuideBookEvent {
         // Index pages (2 filled, 4 blank reserved)
         pages.add(Filterable.passThrough(buildIndexPage(1, 6, List.of(
                 "adrenaline", "astronaut", "beast_mastery", "disarm",
-                "earthen_grip", "echo_guard", "echo_strike", "homing"
+                "earthen_grip", "echo_guard", "echo_step", "echo_strike"
         ), idx)));
         pages.add(Filterable.passThrough(buildIndexPage(2, 6, List.of(
-                "magnetism", "smelter", "photosynthesis", "stability",
-                "timber", "warp", "twerker", "wade"
+                "homing", "magnetism", "photosynthesis", "smelter",
+                "stability", "timber", "twerker", "wade", "warp"
         ), idx)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(3, 6)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(4, 6)));
@@ -82,16 +83,17 @@ public class GuideBookEvent {
         pages.add(Filterable.passThrough(buildDisarm()));
         pages.add(Filterable.passThrough(buildEarthenGrip()));
         pages.add(Filterable.passThrough(buildEchoGuard()));
+        pages.add(Filterable.passThrough(buildEchoStep()));
         pages.add(Filterable.passThrough(buildEchoStrike()));
         pages.add(Filterable.passThrough(buildHoming()));
         pages.add(Filterable.passThrough(buildMagnetism()));
-        pages.add(Filterable.passThrough(buildSmelter()));
         pages.add(Filterable.passThrough(buildPhotosynthesis()));
+        pages.add(Filterable.passThrough(buildSmelter()));
         pages.add(Filterable.passThrough(buildStability()));
         pages.add(Filterable.passThrough(buildTimber()));
-        pages.add(Filterable.passThrough(buildWarp()));
         pages.add(Filterable.passThrough(buildTwerker()));
         pages.add(Filterable.passThrough(buildWade()));
+        pages.add(Filterable.passThrough(buildWarp()));
 
         book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(
                 Filterable.passThrough("Enchants Guide"),
@@ -131,16 +133,17 @@ public class GuideBookEvent {
                 case "disarm" -> linkTo("§4➤ Disarm\n", idx, key);
                 case "earthen_grip" -> linkTo("§8➤ Earthen Grip\n", idx, key);
                 case "echo_guard" -> linkTo("§5➤ Echo Guard\n", idx, key);
+                case "echo_step" -> linkTo("§d➤ Echo Step\n", idx, key);
                 case "echo_strike" -> linkTo("§3➤ Echo Strike\n", idx, key);
                 case "homing" -> linkTo("§2➤ Homing\n", idx, key);
                 case "magnetism" -> linkTo("§6➤ Magnetism\n", idx, key);
-                case "smelter" -> linkTo("§6➤ Smelter\n", idx, key);
                 case "photosynthesis" -> linkTo("§a➤ Photosynthesis\n", idx, key);
+                case "smelter" -> linkTo("§6➤ Smelter\n", idx, key);
                 case "stability" -> linkTo("§e➤ Stability\n", idx, key);
                 case "timber" -> linkTo("§2➤ Timber\n", idx, key);
-                case "warp" -> linkTo("§5➤ Warp\n", idx, key);
                 case "twerker" -> linkTo("§3➤ Twerker\n", idx, key);
                 case "wade" -> linkTo("§1➤ Wade\n", idx, key);
+                case "warp" -> linkTo("§5➤ Warp\n", idx, key);
                 default -> Component.literal("");
             };
             page = Component.empty().append(page).append(entry);
@@ -221,6 +224,18 @@ public class GuideBookEvent {
         ).append(backIndex());
     }
 
+    private static Component buildEchoStep() {
+        return Component.literal(
+                "§l§dEcho Step:\n\n" +
+                        "§7Sprint-jump leaves afterimage.\n" +
+                        "§7Nearby mobs lose focus briefly.\n" +
+                        "§7Lv1: 6s confuse (50%)\n" +
+                        "§7Lv2: 10s confuse (75%)\n" +
+                        "§7Lv3: 14s confuse (100%)\n\n" +
+                        "§6Tip: Trick enemies."
+        ).append(backIndex());
+    }
+
     private static Component buildEchoStrike() {
         return Component.literal(
                 "§l§3Echo Strike:\n\n" +
@@ -248,21 +263,21 @@ public class GuideBookEvent {
         ).append(backIndex());
     }
 
-    private static Component buildSmelter() {
-        return Component.literal(
-                "§l§6Smelter:\n\n" +
-                        "§7Auto-smelts mined ores.\n" +
-                        "§7Scales with level.\n\n" +
-                        "§6Tip: Saves furnace use."
-        ).append(backIndex());
-    }
-
     private static Component buildPhotosynthesis() {
         return Component.literal(
                 "§l§aPhotosynthesis:\n\n" +
                         "§7Heals hunger in sunlight.\n" +
                         "§7High lvls add vision.\n\n" +
                         "§6Tip: Outdoor sustain."
+        ).append(backIndex());
+    }
+
+    private static Component buildSmelter() {
+        return Component.literal(
+                "§l§6Smelter:\n\n" +
+                        "§7Auto-smelts mined ores.\n" +
+                        "§7Scales with level.\n\n" +
+                        "§6Tip: Saves furnace use."
         ).append(backIndex());
     }
 
@@ -286,15 +301,6 @@ public class GuideBookEvent {
         ).append(backIndex());
     }
 
-    private static Component buildWarp() {
-        return Component.literal(
-                "§l§5Warp:\n\n" +
-                        "§7Throw trident to teleport.\n" +
-                        "§7Cooldown scales.\n\n" +
-                        "§6Tip: Escape tool."
-        ).append(backIndex());
-    }
-
     private static Component buildTwerker() {
         return Component.literal(
                 "§l§3Twerker:\n\n" +
@@ -310,6 +316,15 @@ public class GuideBookEvent {
                         "§7Walk faster on water.\n" +
                         "§7Scales with level.\n\n" +
                         "§6Tip: Use with Strider."
+        ).append(backIndex());
+    }
+
+    private static Component buildWarp() {
+        return Component.literal(
+                "§l§5Warp:\n\n" +
+                        "§7Throw trident to teleport.\n" +
+                        "§7Cooldown scales.\n\n" +
+                        "§6Tip: Escape tool."
         ).append(backIndex());
     }
 }

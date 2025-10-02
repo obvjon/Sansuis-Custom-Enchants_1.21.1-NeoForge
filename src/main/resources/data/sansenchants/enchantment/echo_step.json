@@ -1,0 +1,23 @@
+{
+  "description": {
+    "translate": "enchantment.sansenchants.echo_step"
+  },
+  "max_level": 3,
+  "weight": 5,
+  "anvil_cost": 2,
+  "slots": [
+    "feet"
+  ],
+  "exclusive_set": [],
+  "supported_items": "#minecraft:boots",
+  "primary_items": [],
+  "secondary_items": [],
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 30,
+    "per_level_above_first": 10
+  }
+}
