@@ -8,12 +8,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class TimberHandler {
 
@@ -30,55 +31,82 @@ public class TimberHandler {
         ItemStack tool = player.getMainHandItem();
         if (!(tool.getItem() instanceof AxeItem)) return; // only axes
 
-        // Find our enchantment
         var enchantHolder = event.getLevel().registryAccess()
                 .registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
                 .getHolder(TIMBER_ID)
                 .orElse(null);
-
         if (enchantHolder == null) return;
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(enchantHolder, tool);
         if (level <= 0) return;
 
         BlockState state = event.getState();
-        if (!state.is(BlockTags.LOGS)) return; // only trigger on chopping logs
+        if (!state.is(BlockTags.LOGS)) return; // only trigger on logs
 
-        int maxLogs = switch (level) {
-            case 1 -> 10;
-            case 2 -> 30;
-            case 3 -> 100;
-            default -> 10;
-        };
-
-        ServerLevel world = (ServerLevel) event.getLevel();
         BlockPos origin = event.getPos();
 
-        Set<BlockPos> visited = new HashSet<>();
-        fellTree(world, origin, player, visited, maxLogs);
+        // ✅ BASE CHECK: only activate Timber if block under is "soil-like"
+        BlockState below = event.getLevel().getBlockState(origin.below());
+        if (!isSoilBlock(below)) {
+            return; // just break one block normally
+        }
+
+        int maxLogs = switch (level) {
+            case 1 -> 16;
+            case 2 -> 64;
+            case 3 -> 256;
+            default -> 32;
+        };
+
+        chopTree((ServerLevel) event.getLevel(), origin, player, maxLogs);
     }
 
-    private void fellTree(ServerLevel world, BlockPos pos, Player player,
-                          Set<BlockPos> visited, int maxLogs) {
-        if (visited.size() >= maxLogs) return;
-        if (visited.contains(pos)) return;
+    private boolean isSoilBlock(BlockState state) {
+        Block block = state.getBlock();
+        return state.is(BlockTags.DIRT) ||
+                block == Blocks.GRASS_BLOCK ||
+                block == Blocks.PODZOL ||
+                block == Blocks.MYCELIUM ||
+                block == Blocks.ROOTED_DIRT ||
+                block == Blocks.MOSS_BLOCK;
+    }
 
-        BlockState state = world.getBlockState(pos);
-        if (!(state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES))) return;
+    private void chopTree(ServerLevel world, BlockPos origin, Player player, int maxLogs) {
+        Queue<BlockPos> queue = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
 
-        visited.add(pos);
+        queue.add(origin);
+        int logsBroken = 0;
 
-        // Break block naturally
-        world.destroyBlock(pos, true, player);
+        while (!queue.isEmpty() && logsBroken < maxLogs) {
+            BlockPos pos = queue.poll();
+            if (!visited.add(pos)) continue;
 
-        // Search all neighbors in a 3x3x3 cube
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                for (int dz = -1; dz <= 1; dz++) {
-                    if (dx == 0 && dy == 0 && dz == 0) continue; // skip self
-                    BlockPos neighbor = pos.offset(dx, dy, dz);
-                    fellTree(world, neighbor, player, visited, maxLogs);
+            BlockState state = world.getBlockState(pos);
+            if (!state.is(BlockTags.LOGS)) continue;
+
+            // break log
+            world.destroyBlock(pos, true, player);
+            logsBroken++;
+
+            // check neighbors for more logs
+            for (int dy = 1; dy >= -1; dy--) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dz = -1; dz <= 1; dz++) {
+                        if (dx == 0 && dy == 0 && dz == 0) continue;
+                        BlockPos neighbor = pos.offset(dx, dy, dz);
+                        BlockState neighborState = world.getBlockState(neighbor);
+
+                        if (neighborState.is(BlockTags.LOGS) && !visited.contains(neighbor)) {
+                            queue.add(neighbor);
+                        }
+                        // break attached leaves but don’t recurse through them
+                        else if (neighborState.is(BlockTags.LEAVES)) {
+                            world.destroyBlock(neighbor, true, player);
+                        }
+                    }
                 }
             }
         }
-    }}
+    }
+}

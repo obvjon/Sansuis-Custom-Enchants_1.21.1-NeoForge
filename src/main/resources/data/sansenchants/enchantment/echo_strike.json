@@ -1,0 +1,36 @@
+{
+  "max_level": 3,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 5
+  },
+  "max_cost": {
+    "base": 15,
+    "per_level_above_first": 8
+  },
+  "anvil_cost": 2,
+  "weight": 5,
+  "slots": [
+    "mainhand"
+  ],
+  "exclusive_set": [],
+  "primary_items": [
+    "minecraft:wooden_sword",
+    "minecraft:stone_sword",
+    "minecraft:iron_sword",
+    "minecraft:golden_sword",
+    "minecraft:diamond_sword",
+    "minecraft:netherite_sword",
+    "minecraft:wooden_axe",
+    "minecraft:stone_axe",
+    "minecraft:iron_axe",
+    "minecraft:golden_axe",
+    "minecraft:diamond_axe",
+    "minecraft:netherite_axe"
+  ],
+  "supported_items": [],
+  "curses": false,
+  "description": {
+    "translate": "enchantment.sansenchants.echo_strike"
+  }
+}
