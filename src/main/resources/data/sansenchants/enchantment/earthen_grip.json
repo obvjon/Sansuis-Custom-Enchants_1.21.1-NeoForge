@@ -1,0 +1,30 @@
+{
+  "description": {
+    "translate": "enchantment.sansenchants.earthen_grip"
+  },
+  "max_level": 3,
+  "weight": 5,
+  "anvil_cost": 3,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 45,
+    "per_level_above_first": 12
+  },
+  "slots": [
+    "feet"
+  ],
+  "exclusive_set": [],
+  "supported_items": [
+    "minecraft:leather_boots",
+    "minecraft:iron_boots",
+    "minecraft:golden_boots",
+    "minecraft:diamond_boots",
+    "minecraft:netherite_boots",
+    "minecraft:chainmail_boots"
+  ],
+  "primary_items": [],
+  "secondary_items": []
+}

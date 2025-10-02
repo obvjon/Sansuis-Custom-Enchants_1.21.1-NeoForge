@@ -32,46 +32,66 @@ public class GuideBookEvent {
 
         ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
 
-        // Page keys
+        // Page keys (alphabetical list of all enchants)
         List<String> pageKeys = List.of(
-                "index",
-                "echo_strike",
-                "timber",
-                "echo_guard",
-                "homing",
-                "warp_trident",
-                "astronaut",
-                "magnetism",
-                "photosynthesis",
-                "miners_smelter",
-                "twerker",
-                "wade",
                 "adrenaline",
+                "astronaut",
+                "beast_mastery",
+                "disarm",
+                "earthen_grip",
+                "echo_guard",
+                "echo_strike",
+                "homing",
+                "magnetism",
+                "smelter",
+                "photosynthesis",
                 "stability",
-                "disarm"
+                "timber",
+                "warp",
+                "twerker",
+                "wade"
         );
 
+        // Build page index, accounting for 6 index pages
         Map<String, Integer> idx = new HashMap<>();
+        int basePage = 6; // index occupies 6 pages
         for (int i = 0; i < pageKeys.size(); i++) {
-            idx.put(pageKeys.get(i), i);
+            idx.put(pageKeys.get(i), i + basePage);
         }
 
         List<Filterable<Component>> pages = new ArrayList<>();
-        pages.add(Filterable.passThrough(buildIndex(idx)));
-        pages.add(Filterable.passThrough(buildEchoStrike(idx)));
-        pages.add(Filterable.passThrough(buildTimber(idx)));
-        pages.add(Filterable.passThrough(buildEchoGuard(idx)));
-        pages.add(Filterable.passThrough(buildHoming(idx)));
-        pages.add(Filterable.passThrough(buildWarpTrident(idx)));
-        pages.add(Filterable.passThrough(buildAstronaut(idx)));
-        pages.add(Filterable.passThrough(buildMagnetism(idx)));
-        pages.add(Filterable.passThrough(buildPhotosynthesis(idx)));
-        pages.add(Filterable.passThrough(buildMinersSmelter(idx)));
-        pages.add(Filterable.passThrough(buildTwerker(idx)));
-        pages.add(Filterable.passThrough(buildWade(idx)));
-        pages.add(Filterable.passThrough(buildAdrenaline(idx)));
-        pages.add(Filterable.passThrough(buildStability(idx)));
-        pages.add(Filterable.passThrough(buildDisarm(idx)));
+
+        // Index pages (2 filled, 4 blank reserved)
+        pages.add(Filterable.passThrough(buildIndexPage(1, 6, List.of(
+                "adrenaline", "astronaut", "beast_mastery", "disarm",
+                "earthen_grip", "echo_guard", "echo_strike", "homing"
+        ), idx)));
+        pages.add(Filterable.passThrough(buildIndexPage(2, 6, List.of(
+                "magnetism", "smelter", "photosynthesis", "stability",
+                "timber", "warp", "twerker", "wade"
+        ), idx)));
+        pages.add(Filterable.passThrough(buildEmptyIndexPage(3, 6)));
+        pages.add(Filterable.passThrough(buildEmptyIndexPage(4, 6)));
+        pages.add(Filterable.passThrough(buildEmptyIndexPage(5, 6)));
+        pages.add(Filterable.passThrough(buildEmptyIndexPage(6, 6)));
+
+        // Enchant pages (start at page 7)
+        pages.add(Filterable.passThrough(buildAdrenaline()));
+        pages.add(Filterable.passThrough(buildAstronaut()));
+        pages.add(Filterable.passThrough(buildBeastMastery()));
+        pages.add(Filterable.passThrough(buildDisarm()));
+        pages.add(Filterable.passThrough(buildEarthenGrip()));
+        pages.add(Filterable.passThrough(buildEchoGuard()));
+        pages.add(Filterable.passThrough(buildEchoStrike()));
+        pages.add(Filterable.passThrough(buildHoming()));
+        pages.add(Filterable.passThrough(buildMagnetism()));
+        pages.add(Filterable.passThrough(buildSmelter()));
+        pages.add(Filterable.passThrough(buildPhotosynthesis()));
+        pages.add(Filterable.passThrough(buildStability()));
+        pages.add(Filterable.passThrough(buildTimber()));
+        pages.add(Filterable.passThrough(buildWarp()));
+        pages.add(Filterable.passThrough(buildTwerker()));
+        pages.add(Filterable.passThrough(buildWade()));
 
         book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(
                 Filterable.passThrough("Enchants Guide"),
@@ -94,164 +114,202 @@ public class GuideBookEvent {
         );
     }
 
-    private static Component backIndex(Map<String, Integer> idx) {
-        return linkTo("\n\n§8[Back to Index]", idx, "index");
+    private static Component backIndex() {
+        return Component.literal("\n\n§8[Back to Index]").withStyle(s ->
+                s.withClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, "1"))
+        );
     }
 
-    // ---------- index ----------
+    private static Component buildIndexPage(int num, int total, List<String> keys, Map<String, Integer> idx) {
+        Component page = Component.literal("§l§nEnchants Guide\n\n§7Index (Page " + num + "/" + total + ")\n\n");
 
-    private static Component buildIndex(Map<String, Integer> idx) {
-        return Component.literal("§l§nEnchants Guide\n\n")
-                .append(linkTo("§3➤ Echo Strike\n", idx, "echo_strike"))
-                .append(linkTo("§2➤ Timber\n", idx, "timber"))
-                .append(linkTo("§5➤ Echo Guard\n", idx, "echo_guard"))
-                .append(linkTo("§2➤ Homing\n", idx, "homing"))
-                .append(linkTo("§5➤ Warp Trident\n", idx, "warp_trident"))
-                .append(linkTo("§9➤ Astronaut\n", idx, "astronaut"))
-                .append(linkTo("§6➤ Magnetism\n", idx, "magnetism"))
-                .append(linkTo("§a➤ Photosynthesis\n", idx, "photosynthesis"))
-                .append(linkTo("§6➤ Miner’s Smelter\n", idx, "miners_smelter"))
-                .append(linkTo("§3➤ Twerker\n", idx, "twerker"))
-                .append(linkTo("§1➤ Wade\n", idx, "wade"))
-                .append(linkTo("§c➤ Adrenaline\n", idx, "adrenaline"))
-                .append(linkTo("§e➤ Stability\n", idx, "stability"))
-                .append(linkTo("§4➤ Disarm\n", idx, "disarm"));
+        for (String key : keys) {
+            Component entry = switch (key) {
+                case "adrenaline" -> linkTo("§c➤ Adrenaline\n", idx, key);
+                case "astronaut" -> linkTo("§9➤ Astronaut\n", idx, key);
+                case "beast_mastery" -> linkTo("§2➤ Beast Mastery\n", idx, key);
+                case "disarm" -> linkTo("§4➤ Disarm\n", idx, key);
+                case "earthen_grip" -> linkTo("§8➤ Earthen Grip\n", idx, key);
+                case "echo_guard" -> linkTo("§5➤ Echo Guard\n", idx, key);
+                case "echo_strike" -> linkTo("§3➤ Echo Strike\n", idx, key);
+                case "homing" -> linkTo("§2➤ Homing\n", idx, key);
+                case "magnetism" -> linkTo("§6➤ Magnetism\n", idx, key);
+                case "smelter" -> linkTo("§6➤ Smelter\n", idx, key);
+                case "photosynthesis" -> linkTo("§a➤ Photosynthesis\n", idx, key);
+                case "stability" -> linkTo("§e➤ Stability\n", idx, key);
+                case "timber" -> linkTo("§2➤ Timber\n", idx, key);
+                case "warp" -> linkTo("§5➤ Warp\n", idx, key);
+                case "twerker" -> linkTo("§3➤ Twerker\n", idx, key);
+                case "wade" -> linkTo("§1➤ Wade\n", idx, key);
+                default -> Component.literal("");
+            };
+            page = Component.empty().append(page).append(entry);
+        }
+
+        return page;
+    }
+
+    private static Component buildEmptyIndexPage(int num, int total) {
+        return Component.literal("§l§nEnchants Guide\n\n§7Index (Page " + num + "/" + total + ")\n\n§8[Reserved for future enchants]");
     }
 
     // ---------- enchant pages ----------
 
-    private static Component buildEchoStrike(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§3Echo Strike:\n\n" +
-                        "§7Chance to deal a delayed second hit\n" +
-                        "§7on attack, echoing your strike.\n" +
-                        "§7Level increases trigger chance.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildTimber(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§2Timber:\n\n" +
-                        "§7Chop a log and fell the entire tree.\n" +
-                        "§7Works with axes. Higher levels\n" +
-                        "§7may improve efficiency.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildEchoGuard(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§5Echo Guard:\n\n" +
-                        "§7Time shield blocks just right to parry.\n" +
-                        "§7Retaliates with damage + knockback,\n" +
-                        "§7with particles and sounds.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildHoming(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§2Homing:\n\n" +
-                        "§7Arrows curve toward nearby targets.\n" +
-                        "§7- Narrow vision cone\n" +
-                        "§7- Locks onto closest mob\n" +
-                        "§7- Steering force scales by level\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildWarpTrident(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§5Warp Trident:\n\n" +
-                        "§7Throwing teleports you to the trident\n" +
-                        "§7on impact. Applies exhaustion based\n" +
-                        "§7on distance and has a cooldown.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildAstronaut(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§9Astronaut:\n\n" +
-                        "§7Simulates low gravity.\n" +
-                        "§7- Jump boost (scaled)\n" +
-                        "§7- Slow Falling at higher lvls\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildMagnetism(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§6Magnetism:\n\n" +
-                        "§7Pulls items and XP orbs toward you.\n" +
-                        "§7Stronger with more enchanted armor.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildPhotosynthesis(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§aPhotosynthesis:\n\n" +
-                        "§7Day: Slowly restores hunger.\n" +
-                        "§7Lvl 3 stores solar energy.\n\n" +
-                        "§7Night: Use stored charge for\n" +
-                        "§7Night Vision + Glowing aura.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildMinersSmelter(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§6Miner’s Smelter:\n\n" +
-                        "§7Ores drop smelted ingots + XP.\n" +
-                        "§7Lv2: Smelts some foods.\n" +
-                        "§7Lv3: Smelts any block + special\n" +
-                        "§7lava-touch effects.\n" +
-                        "§8Drawback: Hunger + tool wear.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildTwerker(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§3Twerker:\n\n" +
-                        "§7Sneak near crops to grow them.\n" +
-                        "§7Lv2: Auto-harvest and replant.\n" +
-                        "§7Costs small exhaustion.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildWade(Map<String, Integer> idx) {
-        return Component.literal(
-                "§l§1Wade:\n\n" +
-                        "§7Boots-only enchantment.\n" +
-                        "§7Lets you glide across water,\n" +
-                        "§7with speed scaling by level.\n"
-        ).append(backIndex(idx));
-    }
-
-    private static Component buildAdrenaline(Map<String, Integer> idx) {
+    private static Component buildAdrenaline() {
         return Component.literal(
                 "§l§cAdrenaline:\n\n" +
-                        "§7Armor enchantment that empowers\n" +
-                        "§7you when at low health (<25%).\n" +
-                        "§7Lv1: Speed I + Strength I\n" +
-                        "§7Lv2: Speed II + Strength II\n" +
-                        "§7Lv3: Speed III + Strength III\n"
-        ).append(backIndex(idx));
+                        "§7Triggers at low HP (<25%).\n" +
+                        "§7Grants Strength + Speed.\n\n" +
+                        "§7Lv1: Speed I, Str I\n" +
+                        "§7Lv2: Speed II, Str II\n" +
+                        "§7Lv3: Speed III, Str III\n\n" +
+                        "§6Tip: Clutch survival."
+        ).append(backIndex());
     }
 
-    private static Component buildStability(Map<String, Integer> idx) {
+    private static Component buildAstronaut() {
         return Component.literal(
-                "§l§eStability:\n\n" +
-                        "§7Boots-only enchantment of sure footing.\n" +
-                        "§7Lv1: Prevents farmland trampling\n" +
-                        "§7Lv2: Walk on powder snow safely\n" +
-                        "§7Lv3: Grants Resistance I (less knockback)\n"
-        ).append(backIndex(idx));
+                "§l§9Astronaut:\n\n" +
+                        "§7Low-gravity jump + fall.\n" +
+                        "§7Lv1: Small boost\n" +
+                        "§7Lv2: High jump\n" +
+                        "§7Lv3: Near slow-fall\n\n" +
+                        "§6Tip: Elytra synergy."
+        ).append(backIndex());
     }
 
-    private static Component buildDisarm(Map<String, Integer> idx) {
+    private static Component buildBeastMastery() {
+        return Component.literal(
+                "§l§2Beast Mastery:\n\n" +
+                        "§7Buffs your tamed pets.\n" +
+                        "§7Lv1: +10% dmg, +5% hp\n" +
+                        "§7Lv2: +20% dmg, +10% hp\n" +
+                        "§7Lv3: +30% dmg, +15% hp\n\n" +
+                        "§6Tip: Stronger with packs."
+        ).append(backIndex());
+    }
+
+    private static Component buildDisarm() {
         return Component.literal(
                 "§l§4Disarm:\n\n" +
-                        "§7Weapon enchantment with a chance to\n" +
-                        "§7knock items from enemy hands.\n" +
-                        "§7Lv1: 20% chance\n" +
-                        "§7Lv2: 40% chance\n" +
-                        "§7Lv3: 60% chance\n" +
-                        "§7Affects mainhand first, then offhand.\n"
-        ).append(backIndex(idx));
+                        "§7Chance to knock items.\n" +
+                        "§7Lv1: 20%\n" +
+                        "§7Lv2: 40%\n" +
+                        "§7Lv3: 60%\n\n" +
+                        "§6Tip: Punish shields."
+        ).append(backIndex());
+    }
+
+    private static Component buildEarthenGrip() {
+        return Component.literal(
+                "§l§8Earthen Grip:\n\n" +
+                        "§7Resistance when grounded.\n" +
+                        "§7Adds Slowness I.\n" +
+                        "§7Lv1: Res I\n" +
+                        "§7Lv2: Res II\n" +
+                        "§7Lv3: Res III\n\n" +
+                        "§6Tip: Tank tradeoff."
+        ).append(backIndex());
+    }
+
+    private static Component buildEchoGuard() {
+        return Component.literal(
+                "§l§5Echo Guard:\n\n" +
+                        "§7Shield parry enchant.\n" +
+                        "§7Reflects dmg + KB.\n\n" +
+                        "§6Tip: Perfect timing."
+        ).append(backIndex());
+    }
+
+    private static Component buildEchoStrike() {
+        return Component.literal(
+                "§l§3Echo Strike:\n\n" +
+                        "§7Chance to deal echo hit.\n" +
+                        "§7Scales with level.\n\n" +
+                        "§6Tip: Burst DPS."
+        ).append(backIndex());
+    }
+
+    private static Component buildHoming() {
+        return Component.literal(
+                "§l§2Homing:\n\n" +
+                        "§7Arrows curve to targets.\n" +
+                        "§7Better lock per level.\n\n" +
+                        "§6Tip: Best with bows."
+        ).append(backIndex());
+    }
+
+    private static Component buildMagnetism() {
+        return Component.literal(
+                "§l§6Magnetism:\n\n" +
+                        "§7Pulls in items + XP.\n" +
+                        "§7Scales by level.\n\n" +
+                        "§6Tip: Farm helper."
+        ).append(backIndex());
+    }
+
+    private static Component buildSmelter() {
+        return Component.literal(
+                "§l§6Smelter:\n\n" +
+                        "§7Auto-smelts mined ores.\n" +
+                        "§7Scales with level.\n\n" +
+                        "§6Tip: Saves furnace use."
+        ).append(backIndex());
+    }
+
+    private static Component buildPhotosynthesis() {
+        return Component.literal(
+                "§l§aPhotosynthesis:\n\n" +
+                        "§7Heals hunger in sunlight.\n" +
+                        "§7High lvls add vision.\n\n" +
+                        "§6Tip: Outdoor sustain."
+        ).append(backIndex());
+    }
+
+    private static Component buildStability() {
+        return Component.literal(
+                "§l§eStability:\n\n" +
+                        "§7Boots prevent accidents.\n" +
+                        "§7Lv1: No crop trampling\n" +
+                        "§7Lv2: No snow sinking\n" +
+                        "§7Lv3: Adds Res I\n\n" +
+                        "§6Tip: For builders."
+        ).append(backIndex());
+    }
+
+    private static Component buildTimber() {
+        return Component.literal(
+                "§l§2Timber:\n\n" +
+                        "§7Chop one log → tree falls.\n" +
+                        "§7Scales with level.\n\n" +
+                        "§6Tip: Wood farms."
+        ).append(backIndex());
+    }
+
+    private static Component buildWarp() {
+        return Component.literal(
+                "§l§5Warp:\n\n" +
+                        "§7Throw trident to teleport.\n" +
+                        "§7Cooldown scales.\n\n" +
+                        "§6Tip: Escape tool."
+        ).append(backIndex());
+    }
+
+    private static Component buildTwerker() {
+        return Component.literal(
+                "§l§3Twerker:\n\n" +
+                        "§7Sneak to grow crops.\n" +
+                        "§7High lvls auto-replant.\n\n" +
+                        "§6Tip: Farm utility."
+        ).append(backIndex());
+    }
+
+    private static Component buildWade() {
+        return Component.literal(
+                "§l§1Wade:\n\n" +
+                        "§7Walk faster on water.\n" +
+                        "§7Scales with level.\n\n" +
+                        "§6Tip: Use with Strider."
+        ).append(backIndex());
     }
 }
