@@ -1,0 +1,26 @@
+{
+  "description": {
+    "translate": "enchantment.sansenchants.homing"
+  },
+  "weight": 5,
+  "max_level": 3,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 30,
+    "per_level_above_first": 15
+  },
+  "anvil_cost": 2,
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": [
+    "minecraft:bow",
+    "minecraft:crossbow"
+  ],
+  "primary_items": [
+    "minecraft:bow"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "max_level": 1,
+  "weight": 5,
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "supported_items": "#minecraft:armor",
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 0
+  },
+  "max_cost": {
+    "base": 25,
+    "per_level_above_first": 0
+  },
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.sansenchants.photosynthesis"
+  }
+}

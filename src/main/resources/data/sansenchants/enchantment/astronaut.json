@@ -1,0 +1,26 @@
+{
+  "max_level": 3,
+  "min_cost": {
+    "base": 20,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 40,
+    "per_level_above_first": 15
+  },
+  "anvil_cost": 2,
+  "weight": 2,
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "exclusive_set": [],
+  "primary_items": [],
+  "supported_items": "#sansenchants:astronaut_enchantable",
+  "curses": false,
+  "description": {
+    "translate": "enchantment.sansenchants.astronaut"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "description": { "translate": "enchantment.sansenchants.twerker" },
+  "supported_items": [
+    "minecraft:wooden_hoe",
+    "minecraft:stone_hoe",
+    "minecraft:iron_hoe",
+    "minecraft:golden_hoe",
+    "minecraft:diamond_hoe",
+    "minecraft:netherite_hoe"
+  ],
+  "primary_items": [
+    "minecraft:book",
+    "minecraft:wooden_hoe",
+    "minecraft:stone_hoe",
+    "minecraft:iron_hoe",
+    "minecraft:golden_hoe",
+    "minecraft:diamond_hoe",
+    "minecraft:netherite_hoe"
+  ],
+  "weight": 10,
+  "max_level": 3,
+  "min_cost": { "base": 1, "per_level_above_first": 15 },
+  "max_cost": { "base": 30, "per_level_above_first": 10 },
+  "anvil_cost": 2,
+  "slots": [ "mainhand" ],
+  "effects": {}
+}

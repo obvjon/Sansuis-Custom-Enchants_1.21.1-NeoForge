@@ -1,0 +1,30 @@
+{
+  "max_level": 3,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 30,
+    "per_level_above_first": 15
+  },
+  "anvil_cost": 2,
+  "weight": 5,
+  "slots": [
+    "mainhand"
+  ],
+  "exclusive_set": [],
+  "primary_items": [
+    "minecraft:wooden_axe",
+    "minecraft:stone_axe",
+    "minecraft:iron_axe",
+    "minecraft:golden_axe",
+    "minecraft:diamond_axe",
+    "minecraft:netherite_axe"
+  ],
+  "supported_items": [],
+  "curses": false,
+  "description": {
+    "translate": "enchantment.sansenchants.timber"
+  }
+}

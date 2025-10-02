@@ -1,0 +1,32 @@
+{
+  "max_level": 3,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 20,
+    "per_level_above_first": 15
+  },
+  "anvil_cost": 1,
+  "weight": 2,
+  "slots": [
+    "feet"
+  ],
+  "exclusive_set": [
+    "minecraft:frost_walker",
+    "minecraft:depth_strider"
+  ],
+  "primary_items": [
+    "minecraft:leather_boots",
+    "minecraft:iron_boots",
+    "minecraft:golden_boots",
+    "minecraft:diamond_boots",
+    "minecraft:netherite_boots"
+  ],
+  "supported_items": [],
+  "curses": false,
+  "description": {
+    "translate": "enchantment.sansenchants.wade"
+  }
+}
