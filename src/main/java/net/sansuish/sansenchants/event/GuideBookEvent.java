@@ -32,7 +32,7 @@ public class GuideBookEvent {
 
         ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
 
-        // Page keys (alphabetical list of all enchants)
+        // Page keys (alphabetical list of all enchants) — added gluttony and wind_walker
         List<String> pageKeys = List.of(
                 "adrenaline",
                 "astronaut",
@@ -42,6 +42,7 @@ public class GuideBookEvent {
                 "echo_guard",
                 "echo_step",
                 "echo_strike",
+                "gluttony",
                 "homing",
                 "magnetism",
                 "photosynthesis",
@@ -50,7 +51,8 @@ public class GuideBookEvent {
                 "timber",
                 "twerker",
                 "wade",
-                "warp"
+                "warp",
+                "wind_walker"
         );
 
         // Build page index, accounting for 6 index pages
@@ -68,15 +70,15 @@ public class GuideBookEvent {
                 "earthen_grip", "echo_guard", "echo_step", "echo_strike"
         ), idx)));
         pages.add(Filterable.passThrough(buildIndexPage(2, 6, List.of(
-                "homing", "magnetism", "photosynthesis", "smelter",
-                "stability", "timber", "twerker", "wade", "warp"
+                "gluttony", "homing", "magnetism", "photosynthesis",
+                "smelter", "stability", "timber", "twerker", "wade", "warp", "wind_walker"
         ), idx)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(3, 6)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(4, 6)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(5, 6)));
         pages.add(Filterable.passThrough(buildEmptyIndexPage(6, 6)));
 
-        // Enchant pages (start at page 7)
+        // Enchant pages (start at page 7) — must be in the same order as pageKeys
         pages.add(Filterable.passThrough(buildAdrenaline()));
         pages.add(Filterable.passThrough(buildAstronaut()));
         pages.add(Filterable.passThrough(buildBeastMastery()));
@@ -85,6 +87,7 @@ public class GuideBookEvent {
         pages.add(Filterable.passThrough(buildEchoGuard()));
         pages.add(Filterable.passThrough(buildEchoStep()));
         pages.add(Filterable.passThrough(buildEchoStrike()));
+        pages.add(Filterable.passThrough(buildGluttony()));      // NEW
         pages.add(Filterable.passThrough(buildHoming()));
         pages.add(Filterable.passThrough(buildMagnetism()));
         pages.add(Filterable.passThrough(buildPhotosynthesis()));
@@ -94,6 +97,7 @@ public class GuideBookEvent {
         pages.add(Filterable.passThrough(buildTwerker()));
         pages.add(Filterable.passThrough(buildWade()));
         pages.add(Filterable.passThrough(buildWarp()));
+        pages.add(Filterable.passThrough(buildWindWalker()));    // NEW
 
         book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(
                 Filterable.passThrough("Enchants Guide"),
@@ -135,6 +139,7 @@ public class GuideBookEvent {
                 case "echo_guard" -> linkTo("§5➤ Echo Guard\n", idx, key);
                 case "echo_step" -> linkTo("§d➤ Echo Step\n", idx, key);
                 case "echo_strike" -> linkTo("§3➤ Echo Strike\n", idx, key);
+                case "gluttony" -> linkTo("§b➤ Gluttony\n", idx, key);
                 case "homing" -> linkTo("§2➤ Homing\n", idx, key);
                 case "magnetism" -> linkTo("§6➤ Magnetism\n", idx, key);
                 case "photosynthesis" -> linkTo("§a➤ Photosynthesis\n", idx, key);
@@ -144,6 +149,7 @@ public class GuideBookEvent {
                 case "twerker" -> linkTo("§3➤ Twerker\n", idx, key);
                 case "wade" -> linkTo("§1➤ Wade\n", idx, key);
                 case "warp" -> linkTo("§5➤ Warp\n", idx, key);
+                case "wind_walker" -> linkTo("§5➤ Wind Walker\n", idx, key);
                 default -> Component.literal("");
             };
             page = Component.empty().append(page).append(entry);
@@ -245,6 +251,18 @@ public class GuideBookEvent {
         ).append(backIndex());
     }
 
+    private static Component buildGluttony() {
+        return Component.literal(
+                "§l§bGluttony:\n\n" +
+                        "§7Automatically consumes food from your hotbar when hungry.\n" +
+                        "§7Cooldown & speed scale with level.\n\n" +
+                        "§7Lv1: Slow auto-feed (long cooldown)\n" +
+                        "§7Lv2: Faster auto-feed\n" +
+                        "§7Lv3: Rapid auto-feed\n\n" +
+                        "§6Tip: Great for AFK or long raids."
+        ).append(backIndex());
+    }
+
     private static Component buildHoming() {
         return Component.literal(
                 "§l§2Homing:\n\n" +
@@ -325,6 +343,17 @@ public class GuideBookEvent {
                         "§7Throw trident to teleport.\n" +
                         "§7Cooldown scales.\n\n" +
                         "§6Tip: Escape tool."
+        ).append(backIndex());
+    }
+
+    private static Component buildWindWalker() {
+        return Component.literal(
+                "§l§5Wind Walker:\n\n" +
+                        "§7Enhances Elytra flight by granting Speed while flying.\n" +
+                        "§7Lv1: Speed I while Elytra flying\n" +
+                        "§7Lv2: Speed II while Elytra flying\n" +
+                        "§7Lv3: Speed III while Elytra flying\n\n" +
+                        "§6Tip: Great for long-distance travel and aerial maneuvers."
         ).append(backIndex());
     }
 }

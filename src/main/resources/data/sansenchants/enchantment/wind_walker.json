@@ -1,0 +1,26 @@
+{
+  "description": {
+    "translate": "enchantment.sansenchants.wind_walker"
+  },
+  "max_level": 3,
+  "weight": 4,
+  "anvil_cost": 2,
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "exclusive_set": [],
+  "supported_items": "#minecraft:armor",
+  "primary_items": [],
+  "secondary_items": [],
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 40,
+    "per_level_above_first": 15
+  }
+}

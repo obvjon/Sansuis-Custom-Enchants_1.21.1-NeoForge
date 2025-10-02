@@ -1,0 +1,26 @@
+{
+  "description": {
+    "translate": "enchantment.sansenchants.gluttony"
+  },
+  "max_level": 3,
+  "weight": 5,
+  "anvil_cost": 2,
+  "slots": [
+    "head",
+    "chest",
+    "legs",
+    "feet"
+  ],
+  "exclusive_set": [],
+  "supported_items": "#minecraft:armor",
+  "primary_items": [],
+  "secondary_items": [],
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 30,
+    "per_level_above_first": 10
+  }
+}
