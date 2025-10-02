@@ -3,14 +3,14 @@
     "translate": "enchantment.sansenchants.miner_smelter"
   },
   "weight": 5,
-  "max_level": 1,
+  "max_level": 3,
   "min_cost": {
     "base": 25,
-    "per_level_above_first": 0
+    "per_level_above_first": 10
   },
   "max_cost": {
     "base": 75,
-    "per_level_above_first": 0
+    "per_level_above_first": 20
   },
   "anvil_cost": 2,
   "slots": [

@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,11 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.sansuish.sansenchants.SansEnchants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @EventBusSubscriber(modid = SansEnchants.MOD_ID)
 public class EchoStrikeHandler {
@@ -63,34 +68,59 @@ public class EchoStrikeHandler {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-        Iterator<PendingEcho> it = PENDING.iterator();
-        while (it.hasNext()) {
-            PendingEcho echo = it.next();
+        if (PENDING.isEmpty()) return;
+
+        // iterate over a snapshot to avoid ConcurrentModificationExceptions
+        List<PendingEcho> snapshot = new ArrayList<>(PENDING);
+
+        for (PendingEcho echo : snapshot) {
+            // decrement delay on the actual object (snapshot contains same reference)
             echo.delay--;
 
             if (echo.delay <= 0) {
-                ServerLevel level = echo.level;
-                Player player = level.getPlayerByUUID(echo.playerId);
-                LivingEntity target = (LivingEntity) level.getEntity(echo.targetId);
-
-                if (player != null && target != null && target.isAlive()) {
-                    target.invulnerableTime = 0;
-
-                    DamageSources sources = level.damageSources();
-                    DamageSource echoSource = sources.playerAttack(player);
-
-                    target.hurt(echoSource, echo.damage);
-
-                    Vec3 dir = target.position().subtract(player.position());
-                    if (dir.lengthSqr() > 0.0001) {
-                        Vec3 norm = dir.normalize();
-                        target.push(norm.x * 0.2, 0.1, norm.z * 0.2);
+                // Process and remove from the real list inside try/finally to guarantee cleanup
+                try {
+                    ServerLevel level = echo.level;
+                    if (level == null) {
+                        continue;
                     }
 
-                    level.levelEvent(2003, target.blockPosition(), 0);
-                }
+                    Player player = level.getPlayerByUUID(echo.playerId);
 
-                it.remove();
+                    // Lookup entity by UUID and ensure it's a LivingEntity
+                    Entity entity = level.getEntity(echo.targetId);
+                    if (!(entity instanceof LivingEntity target)) {
+                        // target not present or not a living entity — skip
+                        continue;
+                    }
+
+                    if (player != null && target != null && target.isAlive()) {
+                        // reset invulnerability frames so echo can hit
+                        target.invulnerableTime = 0;
+
+                        DamageSources sources = level.damageSources();
+                        DamageSource echoSource = sources.playerAttack(player);
+
+                        // Apply echo damage
+                        target.hurt(echoSource, echo.damage);
+
+                        // small knockback toward away from player
+                        Vec3 dir = target.position().subtract(player.position());
+                        if (dir.lengthSqr() > 0.0001) {
+                            Vec3 norm = dir.normalize();
+                            target.push(norm.x * 0.2, 0.1, norm.z * 0.2);
+                        }
+
+                        // vanilla sweep effect at the target (server-side)
+                        level.levelEvent(2003, target.blockPosition(), 0);
+                    }
+                } catch (Throwable ex) {
+                    // Prevent a single bad echo from crashing the server.
+                    ex.printStackTrace();
+                } finally {
+                    // always remove processed echo from the real list
+                    PENDING.remove(echo);
+                }
             }
         }
     }

@@ -1,5 +1,9 @@
 package net.sansuish.sansenchants;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.sansuish.sansenchants.event.enchants.TimberHandler;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
@@ -49,4 +53,5 @@ public class SansEnchants {
     public void onServerStarting(ServerStartingEvent event) {
         // Called when the server starts
     }
+
 }
